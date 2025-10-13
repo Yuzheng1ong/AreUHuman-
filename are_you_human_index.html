@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>免费测试你是否人类</title>
+  <meta name="description" content="请点击进行测试" />
+  <style>
+    :root {
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, PingFang SC, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      display: grid; place-items: center; background: radial-gradient(1200px 800px at 20% 10%, #f7f7ff 0, #eef2ff 30%, #e8f7ff 60%, #f9fbff 100%);
+      color: #0f172a;
+    }
+    .card {
+      width: min(680px, 92vw);
+      background: #ffffffcc; backdrop-filter: blur(8px);
+      border: 1px solid #e5e7eb; border-radius: var(--radius);
+      box-shadow: 0 10px 30px rgba(2,6,23,.08);
+      padding: 32px; text-align: center;
+    }
+    h1 { font-size: clamp(22px, 4vw, 32px); margin: 0 0 10px; }
+    p.desc { margin: 0 0 20px; color:#475569; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 10px; font-weight: 700; font-size: clamp(18px, 3vw, 22px);
+      padding: 16px 22px; border-radius: calc(var(--radius) - 6px);
+      background: #111827; color: #fff; border: 0; cursor: pointer;
+      transition: transform .05s ease, box-shadow .2s ease, background .2s ease;
+      box-shadow: 0 8px 18px rgba(17,24,39,.18);
+    }
+    .btn:active { transform: translateY(1px) scale(.99); }
+    .btn:focus-visible { outline: 3px solid #a5b4fc; outline-offset: 3px; }
+    .result {
+      margin-top: 18px; font-size: clamp(18px, 2.6vw, 22px);
+      padding: 14px 16px; border-radius: 12px; background: #f8fafc; border:1px dashed #cbd5e1;
+    }
+    .sub { margin-top: 10px; font-size: 13px; color:#64748b; }
+    .footer { margin-top: 18px; font-size: 12px; color:#94a3b8; }
+    .counter { font-variant-numeric: tabular-nums; color:#475569; }
+  </style>
+</head>
+<body>
+  <main class="card" role="main" aria-labelledby="title">
+    <h1 id="title">免费测试你是否人类</h1>
+    <p class="desc">点击按钮获取测试结果。请勿连续点击。</p>
+
+    <button id="checkBtn" class="btn" aria-describedby="hint">
+      人类测试按钮
+    </button>
+
+    <div id="result" class="result" aria-live="polite" aria-atomic="true" hidden></div>
+    <div class="sub"><span class="counter" id="counter">0</span> 次点击（本次测试内）</div>
+    <div class="footer">本实验严格采用US-6657标准进行测试</div>
+  </main>
+
+  <script>
+    (function(){
+      const btn = document.getElementById('checkBtn');
+      const result = document.getElementById('result');
+      const counterEl = document.getElementById('counter');
+
+      let clicks = 0; // 只在本次页面会话中统计
+
+      function speak(text){
+        try {
+          if (!('speechSynthesis' in window)) return;
+          const u = new SpeechSynthesisUtterance(text);
+          u.lang = 'zh-CN';
+          u.rate = 1.02; u.pitch = 1.0; u.volume = 1.0;
+          window.speechSynthesis.cancel();
+          window.speechSynthesis.speak(u);
+        } catch { /* 忽略语音异常 */ }
+      }
+
+      btn.addEventListener('click', () => {
+        clicks++;
+        counterEl.textContent = clicks.toString();
+
+        if (clicks <= 10) {
+          const msg = '恭喜！你是人类';
+          result.textContent = msg;
+          result.hidden = false;
+          if (clicks === 1) speak(msg);
+        } else {
+          const msg = '还在点，这是人类啊？';
+          result.textContent = msg;
+          result.hidden = false;
+          if (clicks === 11) speak('还在点，这是人类啊？');
+        }
+      });
+
+      // 键盘可达性：回车/空格也能触发
+      btn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          btn.click();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
