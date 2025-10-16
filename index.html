@@ -82,10 +82,10 @@
         counterEl.textContent = clicks.toString();
 
         // 66次点击跳转
-        if (clicks === 66) {
-          window.location.href = 'https://sb6657.cn/#/home'; // ← 把这个改成你要跳转的链接
-          return;
-        }
+       if (clicks === 66) {
+  window.open('https://sb6657.cn/#/home', '_self');
+}
+
 
         if (clicks <= 10) {
           const msg = '恭喜！你是人类';
